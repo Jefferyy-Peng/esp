@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="adder2" desc="Accelerator ADDER2" data_size="4" device_id="001" hls_tool="vivado_hls">
+    <param name="size" desc="size" />
+  </accelerator>
+</sld>

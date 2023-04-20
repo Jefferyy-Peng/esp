@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="svd.cpp" path="/home/esp2023/yp2648/esp/svd/svd.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="svd_tb.cpp" path="/home/esp2023/yp2648/esp/svd/svd_tb.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

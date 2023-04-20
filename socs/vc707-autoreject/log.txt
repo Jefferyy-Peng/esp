@@ -1,0 +1,55 @@
+    MKDIR autoreject1_vivado-wdir
+    INFO Running HLS for available implementations of autoreject1_vivado
+    MAKE autoreject1_vivado-hls
+make[1]: Entering directory '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7'
+
+****** Vivado(TM) HLS - High-Level Synthesis from C, C++ and SystemC v2019.2 (64-bit)
+  **** SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+  **** IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+source /opt/xilinx/Vivado/2019.2/scripts/vivado_hls/hls.tcl -notrace
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running '/opt/xilinx/Vivado/2019.2/bin/unwrapped/lnx64.o/vivado_hls'
+INFO: [HLS 200-10] For user 'yp2648' on host 'socp03.c.psyched-span-141520.internal' (Linux_x86_64 version 3.10.0-1160.59.1.el7.x86_64) on Thu Apr 13 15:21:58 EDT 2023
+INFO: [HLS 200-10] On os "CentOS Linux release 7.9.2009 (Core)"
+INFO: [HLS 200-10] In directory '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7'
+Sourcing Tcl script 'common.tcl'
+INFO: [HLS 200-10] Opening project '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7/autoreject1_vivado_dma32_w32'.
+INFO: [HLS 200-10] Adding design file '../src/espacc.cc' to the project
+INFO: [HLS 200-10] Adding test bench file '../tb/tb.cc' to the project
+INFO: [HLS 200-10] Opening solution '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7/autoreject1_vivado_dma32_w32/autoreject1_vivado_acc'.
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [SYN 201-201] Setting up clock 'default' with an uncertainty of 1.25ns.
+INFO: [HLS 200-10] Setting target device to 'xc7vx485t-ffg1761-2'
+INFO: [XFORM 203-1172] Optimizing floating point zeros and discarding its signedness.
+INFO: [XFORM 203-1172] Optimizing floating point zeros and discarding its signedness.
+INFO: [XFORM 203-1173] Reordering floating point operations aggressively.
+INFO: [XFORM 203-1176] Optimizing floating point comparison without checking NaN.
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_export -vivado_optimization_level=2
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_export -vivado_optimization_level=2
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: set_clock_uncertainty default
+INFO: [XFORM 203-1172] Optimizing floating point zeros and discarding its signedness.
+INFO: [XFORM 203-1172] Optimizing floating point zeros and discarding its signedness.
+INFO: [XFORM 203-1173] Reordering floating point operations aggressively.
+INFO: [XFORM 203-1176] Optimizing floating point comparison without checking NaN.
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_export -vivado_optimization_level=2
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_export -vivado_optimization_level=2
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: set_clock_uncertainty default
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+make[2]: Entering directory '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7/autoreject1_vivado_dma32_w32/autoreject1_vivado_acc/csim/build'
+   Compiling ../../../../../tb/tb.cc in debug mode
+   Compiling ../../../../../src/espacc.cc in debug mode
+   Generating csim.exe
+make[2]: Leaving directory '/home/esp2023/yp2648/esp/accelerators/vivado_hls/autoreject1_vivado/hw/hls-work-virtex7/autoreject1_vivado_dma32_w32/autoreject1_vivado_acc/csim/build'
+****start*****
+value = 3.13474e-05, gold_value = 3.08631e-05
+value = 3.15746e-05, gold_value = 3.06573e-05
+Test PASSED.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+WARNING: [HLS 200-40] Cannot find source file ../src/backup.cc; skipping it.
+INFO: [HLS 200-10] Analyzing design file '../src/espacc.cc' ... 
+/home/esp2023/yp2648/esp/utils/make/accelerators.mk:250: recipe for target 'autoreject1_vivado-hls' failed
+make: *** [autoreject1_vivado-hls] Error 130

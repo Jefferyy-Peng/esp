@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="ldasw" desc="Accelerator LDASW" data_size="10" device_id="01a" hls_tool="vivado_hls">
+    <param name="Test_epochs" desc="Test_epochs" />
+    <param name="classes" desc="classes" />
+    <param name="features" desc="features" />
+    <param name="Train_epochs" desc="Train_epochs" />
+  </accelerator>
+</sld>

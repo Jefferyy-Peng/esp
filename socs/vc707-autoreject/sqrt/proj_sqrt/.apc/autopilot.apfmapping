@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="sqrt.cpp" path="/home/esp2023/yp2648/esp/socs/xilinx-vc707-xc7vx485t/sqrt/sqrt.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="sqrt_tb.cpp" path="/home/esp2023/yp2648/esp/socs/xilinx-vc707-xc7vx485t/sqrt/sqrt_tb.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

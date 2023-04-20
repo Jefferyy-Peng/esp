@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="test" desc="Accelerator TEST" data_size="8" device_id="111" hls_tool="vivado_hls">
+    <param name="c" desc="c" />
+    <param name="p" desc="p" />
+    <param name="q" desc="q" />
+    <param name="t" desc="t" />
+  </accelerator>
+</sld>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="lda" desc="Accelerator LDA" data_size="253" device_id="011" hls_tool="vivado_hls">
+    <param name="Tol" desc="Tol" />
+    <param name="Test_epochs" desc="Test_epochs" />
+    <param name="windows" desc="windows" />
+    <param name="classes" desc="classes" />
+    <param name="features" desc="features" />
+    <param name="Train_epochs" desc="Train_epochs" />
+  </accelerator>
+</sld>
