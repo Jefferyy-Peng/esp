@@ -71,7 +71,7 @@ static void init_buf (token_t *in, token_t * gold)
 
 	for (i = 0; i < 1; i++)
 		for (j = 0; j < size; j++)
-			gold[i * out_words_adj + j] = (token_t) j;
+			gold[i * out_words_adj + j] = (token_t) j + j + size;
 }
 
 

@@ -81,9 +81,8 @@ static int validate_buf(token_t *out, float *gold)
 
 			if(j < m*m){
 				uint32_t* tmp1 = (uint32_t*) &gold[i * out_words_adj + j];
-				print_uart("gold = ");print_uart_int(*tmp1);print_uart(" ");
 				uint32_t* tmp2 = (uint32_t*) &val;
-				print_uart("out = ");print_uart_int(*tmp2);print_uart("\n");
+				print_uart("gold = %d out = %d\n", tmp1, tmp2);
 			}
 
 			MAE_sum += MAE*MAE;

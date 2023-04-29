@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
 
     in_words_adj = round_up((p+q)*10+41*b+(p+q)*t*b, VALUES_PER_WORD);
-    out_words_adj = round_up(b, VALUES_PER_WORD);
+    out_words_adj = round_up((p+q)*t, VALUES_PER_WORD);
     in_size = in_words_adj * (1);
     // std::cout << in_size << std::endl;
     out_size = out_words_adj * (1);

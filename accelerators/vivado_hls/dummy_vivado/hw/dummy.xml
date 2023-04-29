@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="dummy" desc="Accelerator DUMMY" data_size="4" device_id="09a" hls_tool="vivado_hls">
+    <param name="p" desc="p" />
+    <param name="q" desc="q" />
+    <param name="t" desc="t" />
+  </accelerator>
+</sld>

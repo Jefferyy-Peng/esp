@@ -9,7 +9,6 @@
 #include <esp_accelerator.h>
 #include <esp_probe.h>
 #include <fixed_point.h>
-
 #include "input.h"
 
 typedef int32_t token_t;
@@ -20,14 +19,15 @@ static unsigned DMA_WORD_PER_BEAT(unsigned _st)
 }
 
 
-#define SLD_AUTOREJECT1 0x02c
-#define DEV_NAME "sld,autoreject1_vivado"
+#define SLD_DUMMY 0x09a
+#define DEV_NAME "sld,dummy_vivado"
 
 /* <<--params-->> */
 const int32_t t = 1;
 const int32_t q = 48;
 const int32_t p = 12;
-// const int32_t b = 1;
+const int b = 1;
+
 
 static unsigned in_words_adj;
 static unsigned out_words_adj;
@@ -47,26 +47,52 @@ static unsigned mem_size;
 
 /* User defined registers */
 /* <<--regs-->> */
-#define AUTOREJECT1_T_REG 0x48
-#define AUTOREJECT1_Q_REG 0x44
-#define AUTOREJECT1_P_REG 0x40
+#define DUMMY_T_REG 0x48
+#define DUMMY_Q_REG 0x44
+#define DUMMY_P_REG 0x40
 
 
-static int validate_buf(token_t *out, token_t *gold)
+static int validate_buf(token_t *out, float *gold)
 {
 	int i;
 	int j;
+	int x;
 	unsigned errors = 0;
 	float MAE;
-	int b = 1;
 
+	// for (i = 0; i < 1; i++)
+	// 	for (j = 0; j < b; j++)
+	// 		if (gold[i * out_words_adj + j] != out[i * out_words_adj + j])
+	// 			errors++;
 	for (i = 0; i < b; i++)
-		for (j = 0; j < 1; j++){
-			float val = fixed32_to_float(out[i * out_words_adj + j], 2);
-			float gold_val = gold_out[i * out_words_adj + j];
+		for(x = 0; x < (p+q)*(10) + 41; x++){
+			token_t val = out[i * out_words_adj + x];
+			float gold_val = gold[i * out_words_adj + x];
 			MAE = (val - gold_val) / gold_val;
-			printf("val[%d] = %.5f", i, val);
-			if (gold[i * out_words_adj + j] != out[i * out_words_adj + j])
+			// printf("val[%d] = %.5f\n", j, val);
+			if(x > (p+q)*10){
+				uint32_t* tmp1 = (uint32_t*) &gold[i * out_words_adj + x];
+				uint32_t* tmp2 = (uint32_t*) &out[i * out_words_adj + x];
+				print_uart("gold [");print_uart_int(x);print_uart("] = ");print_uart_int(*tmp1);print_uart(" ");
+				// print_uart("out_fixed = ");print_uart_int(*tmp3);print_uart(" ");
+				print_uart("out [");print_uart_int(x);print_uart("] = ");print_uart_int(*tmp2);print_uart("\n");
+			}
+			// printf("out = %d", val);
+			// if (MAE > 0.01)
+			// 	errors++;
+		}
+		for (j = 0; j < (p+q)*t; j++){
+			float val = fixed32_to_float(out[i * out_words_adj + x + j], 2);
+			float gold_val = gold[i * out_words_adj + x + j];
+			MAE = (val - gold_val) / gold_val;
+			// printf("val[%d] = %.5f\n", j, val);
+			uint32_t* tmp1 = (uint32_t*) &gold[i * out_words_adj + x + j];
+			uint32_t* tmp2 = (uint32_t*) &val;
+			print_uart("gold [");print_uart_int(j+x);print_uart("] = ");print_uart_int(*tmp1);print_uart(" ");
+			// print_uart("out_fixed = ");print_uart_int(*tmp3);print_uart(" ");
+			print_uart("out [");print_uart_int(j+x);print_uart("] = ");print_uart_int(*tmp2);print_uart("\n");
+			// printf("out = %d", val);
+			if (MAE > 0.01)
 				errors++;
 		}
 
@@ -74,25 +100,39 @@ static int validate_buf(token_t *out, token_t *gold)
 }
 
 
-static void init_buf (token_t *in, token_t * gold)
+static void init_buf (token_t *in, float * gold)
 {
 	int i;
 	int j;
 	int x;
-	int b = 1;
 
+	// for (i = 0; i < 1; i++)
+	// 	for (j = 0; j < (p+q)*10+41+(p+q)*t; j++)
+	// 		in[i * in_words_adj + j] = (token_t) j;
+
+	// for (i = 0; i < 1; i++)
+	// 	for (j = 0; j < p; j++)
+	// 		gold[i * out_words_adj + j] = (token_t) j;
 	printf("initialize buffer \n");
-	
-	for (i = 0; i < b; i++)
+	// printf("Test");
+	for (i = 0; i < b; i++){
 		if(i == 0){
 			for (j = 0; j < (p+q)*10 + 41; j++){
 				in[j] = (token_t) input_idx[j];
-				// printf("indexs[%d] = %d\n", j, in[j]);
+				uint32_t* tmp1 = (uint32_t*) &in[j];
+				if(j <= 10){
+					// print_uart("input_index ");print_uart_int(j);print_uart(" = ");print_uart_int(*tmp1);print_uart(" \n");}
+				}
 			}
 			printf("indexs loaded \n");
-			for (x = 0; x < (p+q)*t; x++){
-				in[x + j] = (token_t) float_to_fixed32(input[x], 2);
-				printf("data[%d] = %d\n", x + j, in[x + j]);
+			for(int y = 0; y<(p+q); y++)
+			for (x = 0; x < t; x++){
+				in[x + y * t + j] = (token_t) float_to_fixed32(input[x + y * 462], 2);
+				// printf("data[%d] = %d\n", x + j, in[x + j]);
+				uint32_t* tmp5 = (uint32_t*) &in[x + y * t + j];
+				uint32_t* tmp6 = (uint32_t*) &input[x + y * 462];
+				print_uart("input_fixed = ");print_uart_int(*tmp5);print_uart(" \n");
+				// print_uart("input_float = ");print_uart_int(*tmp6);print_uart("\n");
 			}
 			printf("data loaded \n");
 		}
@@ -106,14 +146,27 @@ static void init_buf (token_t *in, token_t * gold)
 			}
 			printf("indexs loaded \n");
 			for (j = 0; j < (p+q)*t; j++){
-				in[data_mem_offset + j] = (token_t) input[data_input_offset + j];
+				in[data_mem_offset + j] = (token_t) float_to_fixed32(input[data_input_offset + j],2);
 			}
 			printf("data loaded \n");
 		}
+	}
 		
 
-	for (i = 0; i < b; i++)
-		gold[i] = (token_t) gold_out[i];
+	for (i = 0; i < (q+p)*10 + 41; i++){
+		gold[i] = input_idx[i];
+		// if(i>(q+p)*10){
+		// 	uint32_t* tmp4 = (uint32_t*) &gold[i];
+		// 	// print_uart("input = ");print_uart_int(*tmp3);print_uart(" ");
+		// 	print_uart("gold ");print_uart_int(i);print_uart("=");print_uart_int(*tmp4);print_uart("\n");
+		// }
+	}
+	for(int y = 0; y < (p+q); y++)
+	for(j = 0; j < t; j++){
+		gold[i+j + y * t] = input[j + y * 462];
+		uint32_t* tmp1 = (uint32_t*) &gold[i+j + y * t];
+		// print_uart("gold ");print_uart_int(i+j + y * t);print_uart("=");print_uart_int(*tmp1);print_uart("\n");
+	}
 	printf("gold loaded \n");
 }
 
@@ -128,27 +181,20 @@ int main(int argc, char * argv[])
 	unsigned done;
 	unsigned **ptable;
 	token_t *mem;
-	token_t *gold;
+	float *gold;
 	unsigned errors = 0;
 	unsigned coherence;
-	int b = 1;
 
 	if (DMA_WORD_PER_BEAT(sizeof(token_t)) == 0) {
 		in_words_adj = (p+q)*10+41+(p+q)*t;
-		out_words_adj = 1;
+		out_words_adj = (p+q)*10+41+(p+q)*t;
 	} else {
 		in_words_adj = round_up((p+q)*10+41+(p+q)*t, DMA_WORD_PER_BEAT(sizeof(token_t)));
-		out_words_adj = round_up(1, DMA_WORD_PER_BEAT(sizeof(token_t)));
+		out_words_adj = round_up((p+q)*10+41+(p+q)*t, DMA_WORD_PER_BEAT(sizeof(token_t)));
+		// printf("out_words_adj = %d", DMA_WORD_PER_BEAT(sizeof(token_t)));
 	}
-	// in_len = (p+q)*10 + b*round_up(41+(p+q)*t, DMA_WORD_PER_BEAT(sizeof(token_t)));
-	// // out_len = out_words_adj * (1);
-	// out_len = b;
-	// in_size = in_len * sizeof(token_t);
-	// out_size = out_len * sizeof(token_t);
-	// out_offset  = in_len;
-	// mem_size = (out_offset * sizeof(token_t)) + out_size;
-	in_len = in_words_adj * (1);
-	out_len = out_words_adj * (1);
+	in_len = in_words_adj * (b);
+	out_len = out_words_adj * (b);
 	in_size = in_len * sizeof(token_t);
 	out_size = out_len * sizeof(token_t);
 	out_offset  = in_len;
@@ -158,9 +204,9 @@ int main(int argc, char * argv[])
 	// Search for the device
 	printf("Scanning device tree... \n");
 
-	ndev = probe(&espdevs, VENDOR_SLD, SLD_AUTOREJECT1, DEV_NAME);
+	ndev = probe(&espdevs, VENDOR_SLD, SLD_DUMMY, DEV_NAME);
 	if (ndev == 0) {
-		printf("autoreject1 not found\n");
+		printf("dummy not found\n");
 		return 0;
 	}
 
@@ -224,9 +270,9 @@ int main(int argc, char * argv[])
 
 			// Pass accelerator-specific configuration parameters
 			/* <<--regs-config-->> */
-		iowrite32(dev, AUTOREJECT1_T_REG, t);
-		iowrite32(dev, AUTOREJECT1_Q_REG, q);
-		iowrite32(dev, AUTOREJECT1_P_REG, p);
+		iowrite32(dev, DUMMY_T_REG, t);
+		iowrite32(dev, DUMMY_Q_REG, q);
+		iowrite32(dev, DUMMY_P_REG, p);
 
 			// Flush (customize coherence model here)
 			esp_flush(coherence);
