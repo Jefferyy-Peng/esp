@@ -88,7 +88,6 @@ void compute(word_t _inbuff[SIZE_IN_CHUNK_DATA],
     const unsigned CaIdx_size = 41;
     // const unsigned comp_workers = 1;
 
-    const unsigned D_index = TrIdx_size + TeIdx_size + CaIdx_size;
 
     ap_uint<32> TrIdx[10][Q_MAX];
     ap_uint<32> TeIdx[10][P_MAX];
@@ -97,10 +96,12 @@ void compute(word_t _inbuff[SIZE_IN_CHUNK_DATA],
 
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < Q_MAX; j++){
+            ap_uint<32> temp0;
             for(int k = 0; k < 32; k++){
                 // std::cout << "Trk=" << k << std::endl;
-                TrIdx[i][j](k,k) = _inbuff[i * q + j][k];
+                temp0(k,k) = _inbuff[i * q + j][k];
             }
+            TrIdx[i][j] = temp0;
             #ifndef __SYNTHESIS__
             std::cout << "TrIdx[" << i << "][" << j << "] = " << TrIdx[i][j] << std::endl;
             #endif
@@ -109,10 +110,12 @@ void compute(word_t _inbuff[SIZE_IN_CHUNK_DATA],
 
     for(int i = 0; i < 10; i++){
         for(int j = 0; j < P_MAX; j++){
+            ap_uint<32> temp1;
             for(int k = 0; k < 32; k++){
                 // std::cout << "Trk=" << k << std::endl;
-                TeIdx[i][j](k,k) = _inbuff[TrIdx_size + i * p + j][k];
+                temp1(k,k) = _inbuff[TrIdx_size + i * p + j][k];
             }
+            TeIdx[i][j] = temp1;
             #ifndef __SYNTHESIS__
             std::cout << "TeIdx[" << i << "][" << j << "] = " << TeIdx[i][j] << std::endl;
             #endif
@@ -120,16 +123,19 @@ void compute(word_t _inbuff[SIZE_IN_CHUNK_DATA],
     }
 
     for(int i = 0; i < 41; i++){
+        ap_uint<32> temp2;
         for(int k = 0; k < 32; k++){
                 // std::cout << "Trk=" << k << std::endl;
-                CaIdx[i](k,k) = _inbuff[TrIdx_size + TeIdx_size + i][k];
+                temp2(k,k) = _inbuff[TrIdx_size + TeIdx_size + i][k];
         }
+        CaIdx[i] = temp2;
         #ifndef __SYNTHESIS__
         std::cout << "CaIdx[" << i << "] = " << CaIdx[i] << std::endl;
         #endif
     }
 
 
+    const unsigned D_index = TrIdx_size + TeIdx_size + CaIdx_size;
     for(int i = 0; i < Q_MAX + P_MAX; i++){
         for(int j = 0; j < t; j++){
             D[i][j] = _inbuff[D_index + i * t + j];
@@ -140,23 +146,29 @@ void compute(word_t _inbuff[SIZE_IN_CHUNK_DATA],
     }
     for(int i = 0; i< 10; i++)
     for (int j = 0; j < Q_MAX; j++){
+        ap_fixed<32, 2> temp3;
         for(int k = 0; k < 32; k++)
-            _outbuff[j + i * Q_MAX] = TrIdx[i][j];
+            temp3(k,k) = TrIdx[i][j][k];
+        _outbuff[j + i * Q_MAX] = temp3;
         #ifndef __SYNTHESIS__
             std::cout << "outbuff[" << j + i * Q_MAX << "] = " << _outbuff[j + i * Q_MAX] << std::endl;
         #endif
     }
     for(int i = 0; i< 10; i++)
     for (int j = 0; j < P_MAX; j++){
+        ap_fixed<32, 2> temp4;
         for(int k = 0; k < 32; k++)
-            _outbuff[q*10 + i * P_MAX + j] = TeIdx[i][j];
+            temp4(k,k) = TeIdx[i][j][k];
+        _outbuff[q*10 + i * P_MAX + j] = temp4;
         #ifndef __SYNTHESIS__
             std::cout << "outbuff[" << q*10 + i * P_MAX + j << "] = " << _outbuff[q*10 + i * P_MAX + j] << std::endl;
         #endif
     }
     for (int i = 0; i < 41; i++){
+        ap_fixed<32, 2> temp5;
         for(int k = 0; k < 32; k++)
-            _outbuff[(q+p)*10 + i] = CaIdx[i];
+            temp5(k,k) = CaIdx[i][k];
+        _outbuff[(q+p)*10 + i] = temp5;
         #ifndef __SYNTHESIS__
             std::cout << "outbuff[" << (q+p)*10 + i << "] = " <<  _outbuff[(q+p)*10 + i] << std::endl;
         #endif
